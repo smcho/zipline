@@ -100,6 +100,8 @@ def keywords(func):
     """
     if isinstance(func, type):
         return keywords(func.__init__)
+    elif isinstance(func, partial):
+        return keywords(func.func)
     return inspect.getargspec(func).args
 
 
@@ -444,7 +446,7 @@ def _register_assert_ndframe_equal(type_, assert_eq):
             assert_eq(
                 result,
                 expected,
-                **filter_kwargs(assert_frame_equal, kwargs)
+                **filter_kwargs(assert_eq, kwargs)
             )
         except AssertionError as e:
             raise AssertionError(
